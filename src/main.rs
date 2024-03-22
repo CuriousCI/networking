@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use std::net::{SocketAddr, UdpSocket};
 
 // QR	Indicates if the message is a query (0) or a reply (1)	1
@@ -319,12 +321,12 @@ fn main() {
         let request = DNSMessage::from(Box::from(buffer));
 
         println!("Received {} bytes from {}", size, src);
-        println!("Data {:?}", buffer);
-        println!(
-            "Request {:?} - {:?}",
-            String::from_utf8_lossy(&request.questions[0].name),
-            request.questions[0].dns_type as u8
-        );
+        println!("Data {:?}\n\n", &buffer[..size + 1]);
+        // println!(
+        //     "Request {:?} - {:?}",
+        //     String::from_utf8_lossy(&request.questions[0].name),
+        //     request.questions[0].dns_type as u8
+        // );
 
         // Nota interessante: se il campo identification è diverso da quello della richiesta,
         // nslookup crede dice che c'è un timeout (pensa che la risposta non sia stata ricevuta)
@@ -355,7 +357,7 @@ fn main() {
             additional_rrs: Box::new([]),
         };
         let body: Box<[u8]> = message.into();
-        println!("Response {:?}", body);
+        // println!("Response {:?}", body);
         socket.send_to(&body, src).unwrap();
     }
 }
