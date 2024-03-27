@@ -1,4 +1,5 @@
 use dns::{DNSMessage, DNSRecordType, QueryReply, ResourceRecord};
+use rdt::udt::send;
 use std::net::{Ipv4Addr, SocketAddrV4, UdpSocket};
 use std::thread::spawn;
 
@@ -36,26 +37,25 @@ fn dns() {
     }
 }
 
-fn rdt(src: SocketAddrV4, dest: SocketAddrV4) {
+fn rdt(src: SocketAddrV4, dst: SocketAddrV4) {
     let socket = UdpSocket::bind(src).unwrap();
-    let mut buf = [0; 512]; // Ringrazio il limite di 512 byte, mi facilita il lavoro 😁!
+    let mut buf = [0; 512];
 
     loop {
         let (_, src) = socket.recv_from(&mut buf).unwrap();
 
-        let message: RDTRequest = RDTMessage::from(&buf);
-        let response: RDTResponse = RDTResponse {
-            sequence_number: message.sequence_number,
-            ack_number: message.sequence_number + 1,
-            payload: vec![0; 512],
-        };
+        // let message: RDTRequest = RDTMessage::from(&buf);
+        // let response: RDTResponse = RDTResponse {
+        //     sequence_number: message.sequence_number,
+        //     ack_number: message.sequence_number + 1,
+        //     payload: vec![0; 512],
+        // };
 
-        socket.send_to(&response, src).unwrap();
+        // socket.send_to(&response, dst).unwrap();
     }
 }
 
 fn main() {
-    // dns();
     let a = SocketAddrV4::new(Ipv4Addr::new(0, 0, 0, 0), 3030);
     let b = SocketAddrV4::new(Ipv4Addr::new(0, 0, 0, 0), 4040);
 
