@@ -56,7 +56,8 @@ impl From<&[u8]> for RDT {
             0 => RDT::Ack(Number::from(buf[0])),
             _ => {
                 let number = Number::from(buf[0]);
-                let payload = buf[1..].to_vec();
+                let len = (buf[0] & 0x3f) as usize;
+                let payload = buf[1..2 + len].to_vec();
                 RDT::Message((number, payload))
             }
         }
@@ -114,4 +115,3 @@ pub mod udt {
         socket.send_to(buf, addr).unwrap();
     }
 }
-
